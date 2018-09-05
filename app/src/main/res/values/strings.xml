@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Nexaas id client</string>
+    <string name="title_activity_user_profile">UserProfileActivity</string>
+    <string name="uuid">UUID</string>
+    <string name="nickname">Apelido</string>
+    <string name="birth">Nascimento</string>
+    <string name="gender">Gênero</string>
+    <string name="language">Idioma</string>
+    <string name="timezone">Fuso horário</string>
+    <string name="country">País</string>
+    <string name="city">Cidade</string>
+    <string name="bio">Sobre</string>
+    <string name="enter_nexaas">Entrar com sua Nexaas id</string>
+    <string name="nexaas_mark">Nexaas logo</string>
+    <string name="id">id</string>
+    <string name="user_profile">Perfil do usuário</string>
+</resources>
