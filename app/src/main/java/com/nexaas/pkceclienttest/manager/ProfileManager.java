@@ -2,7 +2,6 @@ package com.nexaas.pkceclienttest.manager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 
 import com.nexaas.pkceclienttest.RetrofitInstance;
 import com.nexaas.pkceclienttest.interfaces.PictureService;
@@ -14,7 +13,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * Created by alexandre on 24/08/2018.

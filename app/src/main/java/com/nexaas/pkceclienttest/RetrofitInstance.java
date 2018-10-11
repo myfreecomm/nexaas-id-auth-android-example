@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
@@ -32,31 +31,21 @@ public class RetrofitInstance {
     private static RetrofitInstance instance;
     private static Retrofit retrofit;
 
-    public static Retrofit getInstance () {
+    public static Retrofit getInstance() {
         if (instance == null)
             instance = new RetrofitInstance();
 
         return instance.getRetrofit(null);
     }
 
-    public static Retrofit getInstanceBearer (String bearerToken) {
+    public static Retrofit getInstanceBearer(String bearerToken) {
         if (instance == null)
             instance = new RetrofitInstance();
 
         return instance.getRetrofit(bearerToken);
     }
 
-    private Retrofit getRetrofit (String bearerToken) {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(API_BASE_URL)
-                .addConverterFactory(LoganSquareConverterFactory.create())
-                .client(getClient(bearerToken))
-                .build();
-
-        return retrofit;
-    }
-
-    private static OkHttpClient getClient (String bearerToken) {
+    private static OkHttpClient getClient(String bearerToken) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
         clientBuilder
@@ -71,40 +60,34 @@ public class RetrofitInstance {
         return clientBuilder.build();
     }
 
-    private static Interceptor getInterceptor () {
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
+    private static Interceptor getInterceptor() {
+        return chain -> {
+            Request request = chain.request();
 
-                request.newBuilder()
-                        .addHeader("Content-Type", "application/json;charset=UTF-8")
-                        .addHeader("accept", "application.json;charset=UTF-8")
-                        .build();
+            request.newBuilder()
+                    .addHeader("Content-Type", "application/json;charset=UTF-8")
+                    .addHeader("accept", "application.json;charset=UTF-8")
+                    .build();
 
-                return chain.proceed(request);
-            }
+            return chain.proceed(request);
         };
     }
 
-    private static Interceptor getInterceptorBearer (final String bearer) {
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
+    private static Interceptor getInterceptorBearer(final String bearer) {
+        return chain -> {
+            Request request = chain.request();
 
-                request = request.newBuilder()
-                        .addHeader("Content-Type", "application/json;charset=UTF-8")
-                        .addHeader("accept", "application.json;charset=UTF-8")
-                        .addHeader("Authorization", "Bearer " + bearer)
-                        .build();
+            request = request.newBuilder()
+                    .addHeader("Content-Type", "application/json;charset=UTF-8")
+                    .addHeader("accept", "application.json;charset=UTF-8")
+                    .addHeader("Authorization", "Bearer " + bearer)
+                    .build();
 
-                return chain.proceed(request);
-            }
+            return chain.proceed(request);
         };
     }
 
-    public static String getError (ResponseBody error) {
+    public static String getError(ResponseBody error) {
         if (error != null) {
             try {
                 Converter<ResponseBody, ErrorModel> converter = retrofit.responseBodyConverter(ErrorModel.class, new Annotation[0]);
@@ -136,7 +119,7 @@ public class RetrofitInstance {
         return "Erro desconhecido na conexão";
     }
 
-    public static String treatFailureMessage (Throwable t) {
+    public static String treatFailureMessage(Throwable t) {
         String message;
         if (t instanceof SocketTimeoutException) {
             message = "O servidor excedeu o tempo limeite de conexão.";
@@ -144,5 +127,15 @@ public class RetrofitInstance {
             message = "O servidor encontrou um erro na requisição";
 
         return message;
+    }
+
+    private Retrofit getRetrofit(String bearerToken) {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(API_BASE_URL)
+                .addConverterFactory(LoganSquareConverterFactory.create())
+                .client(getClient(bearerToken))
+                .build();
+
+        return retrofit;
     }
 }

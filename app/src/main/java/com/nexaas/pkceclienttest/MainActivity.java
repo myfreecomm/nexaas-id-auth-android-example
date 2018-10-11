@@ -5,8 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         checkSession();
     }
 
-    private void checkSession () {
+    private void checkSession() {
         nexaasAuthorization = SessionManager.getNexaasAccessAuthorization(this);
 
         if (nexaasAuthorization != null) {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         ProfileManager.getProfile(nexaasAuthorization.accessToken, onGetProfileListener());
     }
 
-    private void onActivityCreated () {
+    private void onActivityCreated() {
         authenticationButton = findViewById(R.id.athentication_button);
 
         progressDialog = new ProgressDialog(this);
@@ -77,26 +77,32 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setMessage("aguarde...");
     }
 
-    public void onLoginButtonClick (View view) {
+    public void onLoginButtonClick(View view) {
         AuthorizationService authService = new AuthorizationService(this);
         Intent intent = authService.getAuthorizationRequestIntent(getAuthRequest());
         startActivityForResult(intent, 100);
     }
 
-    private AuthorizationServiceConfiguration configureService () {
-        return new AuthorizationServiceConfiguration(Uri.parse(RetrofitInstance.API_BASE_URL + API_OAUTH), Uri.parse(RetrofitInstance.API_BASE_URL + API_TOKEN));
-    }
-
-    private AuthorizationRequest getAuthRequest () {
-        AuthorizationRequest.Builder requestBuilder = new AuthorizationRequest.Builder(configureService(), CLIENT_ID, ResponseTypeValues.CODE, Uri.parse(REDIRECT_URI));
+    private AuthorizationRequest getAuthRequest() {
+        AuthorizationRequest.Builder requestBuilder =
+                new AuthorizationRequest.Builder(
+                        configureService(),
+                        CLIENT_ID,
+                        ResponseTypeValues.CODE,
+                        Uri.parse(REDIRECT_URI));
 
         requestBuilder.setScope("profile");
-
 
         return requestBuilder.build();
     }
 
-    private void requestToken (String authCode, String codeVerifier) {
+    private AuthorizationServiceConfiguration configureService() {
+        return new AuthorizationServiceConfiguration(
+                Uri.parse(RetrofitInstance.API_BASE_URL + API_OAUTH),
+                Uri.parse(RetrofitInstance.API_BASE_URL + API_TOKEN));
+    }
+
+    private void requestToken(String authCode, String codeVerifier) {
         progressDialog.show();
 
         OauthToken oauthToken = new OauthToken();
@@ -110,12 +116,12 @@ public class MainActivity extends AppCompatActivity {
         OauthManager.getUserCredentials(oauthToken, oauthTokenListener());
     }
 
-    private void setProfile (UserProfile profile) {
+    private void setProfile(UserProfile profile) {
         SessionManager.storeUserProfile(this, profile);
         startActivity(new Intent(this, UserProfileActivity.class));
     }
 
-    private ResponseListener<NexaasIdUser> oauthTokenListener () {
+    private ResponseListener<NexaasIdUser> oauthTokenListener() {
         return new ResponseListener<NexaasIdUser>() {
             @Override
             public void onSuccess(NexaasIdUser item) {
@@ -137,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private ResponseListener<UserProfile> onGetProfileListener (){
+    private ResponseListener<UserProfile> onGetProfileListener() {
         return new ResponseListener<UserProfile>() {
             @Override
             public void onSuccess(UserProfile item) {

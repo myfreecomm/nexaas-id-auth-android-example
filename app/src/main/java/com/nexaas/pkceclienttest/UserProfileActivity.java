@@ -2,8 +2,8 @@ package com.nexaas.pkceclienttest;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -15,7 +15,7 @@ import com.nexaas.pkceclienttest.models.UserProfile;
 public class UserProfileActivity extends AppCompatActivity {
 
     private TextView nameText, emailText, uuidText, nicknameText, birthText, genderText, languageText,
-                timezoneText, countryText, cityText, bioText;
+            timezoneText, countryText, cityText, bioText;
 
     private CircularImageView picture;
 
@@ -30,7 +30,7 @@ public class UserProfileActivity extends AppCompatActivity {
         onActivityCreated();
     }
 
-    private void setupToolbar () {
+    private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -39,7 +39,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void onActivityCreated () {
+    private void onActivityCreated() {
         nameText = findViewById(R.id.user_name);
         emailText = findViewById(R.id.user_email);
         uuidText = findViewById(R.id.user_uuid);
@@ -57,7 +57,7 @@ public class UserProfileActivity extends AppCompatActivity {
         getProfile();
     }
 
-    private void getProfile () {
+    private void getProfile() {
         profile = SessionManager.getUserProfile(this);
 
         if (profile != null) {
@@ -65,8 +65,9 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void setProfile () {
-        if (profile.picture != null) ProfileManager.getProfilePicture(profile.picture, onPictureListener());
+    private void setProfile() {
+        if (profile.picture != null)
+            ProfileManager.getProfilePicture(profile.picture, onPictureListener());
 
         nameText.setText(profile.name);
         emailText.setText(profile.email);
@@ -81,7 +82,7 @@ public class UserProfileActivity extends AppCompatActivity {
         bioText.setText(profile.bio);
     }
 
-    private ResponseListener<Bitmap> onPictureListener () {
+    private ResponseListener<Bitmap> onPictureListener() {
         return new ResponseListener<Bitmap>() {
             @Override
             public void onSuccess(Bitmap item) {
@@ -94,5 +95,4 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         };
     }
-
 }
