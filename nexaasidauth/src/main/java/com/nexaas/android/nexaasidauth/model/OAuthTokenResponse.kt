@@ -10,7 +10,7 @@ data class OAuthTokenResponse(
     @Json(name = "token_type")
     val tokenType: String,
     @Json(name = "expires_in")
-    val expiresIn: String,
+    val expiresIn: Long,
     @Json(name = "refresh_token")
     val refreshToken: String,
     val scope: String,

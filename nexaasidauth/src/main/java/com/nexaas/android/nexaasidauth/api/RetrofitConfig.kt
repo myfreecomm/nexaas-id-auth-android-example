@@ -1,17 +1,19 @@
 package com.nexaas.android.nexaasidauth.api
 
 import com.github.aurae.retrofit2.LoganSquareConverterFactory
+import com.nexaas.android.nexaasidauth.R
 import com.nexaas.android.nexaasidauth.api.services.OauthTokenService
 import com.nexaas.android.nexaasidauth.api.services.ProfileService
+import com.nexaas.android.nexaasidauth.helper.Environment
+import com.nexaas.android.nexaasidauth.helper.Utils
 
-import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-class RetrofitConfig(bearerToken: String?) {
+class RetrofitConfig(bearerToken: String?, environment: Environment) {
 
     private val retrofit: Retrofit
 
@@ -23,7 +25,7 @@ class RetrofitConfig(bearerToken: String?) {
 
     init {
         this.retrofit = Retrofit.Builder()
-                .baseUrl("https://sandbox.id.nexaas.com/")
+                .baseUrl(getBaseUrl(environment))
                 .addConverterFactory(LoganSquareConverterFactory.create())
                 .client(getClient(bearerToken))
                 .build()
@@ -33,6 +35,13 @@ class RetrofitConfig(bearerToken: String?) {
 
         private const val CONNECT_TIMEOUT = 10000
         private const val READ_TIMEOUT = 15000
+
+        private fun getBaseUrl(environment: Environment) : String {
+            return when(environment == Environment.SANDBOX) {
+                true -> Utils.getString(R.string.nexaas_id_url_sandbox)
+                false -> Utils.getString(R.string.nexaas_id_url_production)
+            }
+        }
 
         private fun getClient(bearerToken: String?): OkHttpClient {
             val clientBuilder = OkHttpClient.Builder()
@@ -72,13 +81,6 @@ class RetrofitConfig(bearerToken: String?) {
                         .build()
 
                 chain.proceed(request)
-            }
-        }
-
-        fun treatFailureMessage(t: Throwable): String {
-            return when (t is SocketTimeoutException) {
-                true -> "O servidor excedeu o tempo limeite de conexão."
-                false -> "O servidor encontrou um erro inesperado na requisição."
             }
         }
     }

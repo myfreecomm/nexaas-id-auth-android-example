@@ -4,4 +4,8 @@
     <string name="nexaas_id_url_sandbox" translatable="false">https://sandbox.id.nexaas.com/</string>
     <string name="nexaas_id_oauth_path" translatable="false">oauth/authorize</string>
     <string name="nexaas_id_token_path" translatable="false">oauth/token</string>
+
+    <string name="unauthorized">Unauthorized</string>
+    <string name="timeout_error">O servidor excedeu o tempo limeite de conexão.</string>
+    <string name="unexpected_error">O servidor encontrou um erro inesperado na requisição.</string>
 </resources>
