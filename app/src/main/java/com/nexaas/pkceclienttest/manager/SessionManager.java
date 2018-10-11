@@ -14,14 +14,13 @@ import java.io.IOException;
  * Created by alexandre on 24/08/2018.
  * Copyright© Nexaas™. All rights reserved.
  */
-
 public class SessionManager {
 
     private static final String NEXAAS_ACCOUNT_ACCESS = "nexaas_access";
     private static final String USER_PROFILE = "user_profile";
     private static final String NEXAAS_ID_PREFS = "nexaas_id_prefs";
 
-    public static void storeUserTokens (Context context, NexaasIdUser nexaasId) {
+    public static void storeUserTokens(Context context, NexaasIdUser nexaasId) {
         try {
             SharedPreferences prefs = context.getSharedPreferences(NEXAAS_ID_PREFS, Context.MODE_PRIVATE);
 
@@ -31,11 +30,11 @@ public class SessionManager {
 
             editor.putString(NEXAAS_ACCOUNT_ACCESS, parse).apply();
         } catch (IOException e) {
-            Log.e ("Parse preferences error", e.getLocalizedMessage());
+            Log.e("Parse preferences error", e.getLocalizedMessage());
         }
     }
 
-    public static NexaasIdUser getNexaasAccessAuthorization (Context context) {
+    public static NexaasIdUser getNexaasAccessAuthorization(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(NEXAAS_ID_PREFS, Context.MODE_PRIVATE);
 
         String nexaasIdJson = prefs.getString(NEXAAS_ACCOUNT_ACCESS, null);
@@ -50,7 +49,7 @@ public class SessionManager {
         return null;
     }
 
-    public static void storeUserProfile (Context context, UserProfile profile) {
+    public static void storeUserProfile(Context context, UserProfile profile) {
         if (profile != null) {
             try {
                 SharedPreferences prefs = context.getSharedPreferences(NEXAAS_ID_PREFS, Context.MODE_PRIVATE);
@@ -66,7 +65,7 @@ public class SessionManager {
         }
     }
 
-    public static UserProfile getUserProfile (Context context) {
+    public static UserProfile getUserProfile(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(NEXAAS_ID_PREFS, Context.MODE_PRIVATE);
 
         try {

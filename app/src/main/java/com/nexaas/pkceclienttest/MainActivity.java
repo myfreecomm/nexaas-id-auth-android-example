@@ -3,32 +3,29 @@ package com.nexaas.pkceclienttest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.nexaas.pkceclienttest.interfaces.ResponseListener;
-import com.nexaas.pkceclienttest.manager.OauthManager;
-import com.nexaas.pkceclienttest.manager.ProfileManager;
+import com.nexaas.android.nexaasidauth.api.OAuthTokenRequest;
+import com.nexaas.android.nexaasidauth.api.ProfileRequest;
+import com.nexaas.android.nexaasidauth.auth.AuthConfig;
+import com.nexaas.android.nexaasidauth.callback.ResponseCallback;
+import com.nexaas.android.nexaasidauth.helper.Environment;
+import com.nexaas.android.nexaasidauth.model.OAuthTokenResponse;
+import com.nexaas.android.nexaasidauth.model.PersonalInfo;
 import com.nexaas.pkceclienttest.manager.SessionManager;
 import com.nexaas.pkceclienttest.models.NexaasIdUser;
-import com.nexaas.pkceclienttest.models.OauthToken;
 import com.nexaas.pkceclienttest.models.UserProfile;
-
-import net.openid.appauth.AuthorizationRequest;
-import net.openid.appauth.AuthorizationResponse;
-import net.openid.appauth.AuthorizationService;
-import net.openid.appauth.AuthorizationServiceConfiguration;
-import net.openid.appauth.ResponseTypeValues;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String API_OAUTH = "oauth/authorize";
-    public static final String API_TOKEN = "oauth/token";
+    // These three consts must be taken in your application created in NexaasID dashboard
     private static final String CLIENT_ID = "JDBY5VIH55F3ZGDG2Y3WWCWNAE";
     private static final String CLIENT_SECRET = "2D7ZAIXJUJHHDHSZUQBIHAZUOU";
     private static final String REDIRECT_URI = "app://com.nexaas.pw2oauthtest.browserswitch/callback";
@@ -56,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (prof != null)
                 setProfile(prof);
-
             else {
                 getProfile();
             }
@@ -66,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
     private void getProfile() {
         progressDialog.setTitle("Recuperando dados do usuário");
         progressDialog.show();
-        ProfileManager.getProfile(nexaasAuthorization.accessToken, onGetProfileListener());
+
+        ProfileRequest.Companion.getPersonalInfo(
+                nexaasAuthorization.accessToken,
+                Environment.SANDBOX,
+                onGetProfileListener());
     }
 
     private void onActivityCreated() {
@@ -78,42 +78,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLoginButtonClick(View view) {
-        AuthorizationService authService = new AuthorizationService(this);
-        Intent intent = authService.getAuthorizationRequestIntent(getAuthRequest());
-        startActivityForResult(intent, 100);
-    }
+        Intent authIntent =
+                AuthConfig.Companion.authorize(this,
+                        CLIENT_ID, REDIRECT_URI, Environment.SANDBOX);
 
-    private AuthorizationRequest getAuthRequest() {
-        AuthorizationRequest.Builder requestBuilder =
-                new AuthorizationRequest.Builder(
-                        configureService(),
-                        CLIENT_ID,
-                        ResponseTypeValues.CODE,
-                        Uri.parse(REDIRECT_URI));
-
-        requestBuilder.setScope("profile");
-
-        return requestBuilder.build();
-    }
-
-    private AuthorizationServiceConfiguration configureService() {
-        return new AuthorizationServiceConfiguration(
-                Uri.parse(RetrofitInstance.API_BASE_URL + API_OAUTH),
-                Uri.parse(RetrofitInstance.API_BASE_URL + API_TOKEN));
-    }
-
-    private void requestToken(String authCode, String codeVerifier) {
-        progressDialog.show();
-
-        OauthToken oauthToken = new OauthToken();
-
-        oauthToken.clientId = CLIENT_ID;
-        oauthToken.clientSecret = CLIENT_SECRET;
-        oauthToken.codeVerifier = codeVerifier;
-        oauthToken.code = authCode;
-        oauthToken.redirectUri = REDIRECT_URI;
-
-        OauthManager.getUserCredentials(oauthToken, oauthTokenListener());
+        startActivityForResult(authIntent, 100);
     }
 
     private void setProfile(UserProfile profile) {
@@ -121,14 +90,21 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, UserProfileActivity.class));
     }
 
-    private ResponseListener<NexaasIdUser> oauthTokenListener() {
-        return new ResponseListener<NexaasIdUser>() {
+    private ResponseCallback<OAuthTokenResponse> oauthTokenListener() {
+        return new ResponseCallback<OAuthTokenResponse>() {
             @Override
-            public void onSuccess(NexaasIdUser item) {
+            public void onSuccess(OAuthTokenResponse tokenResponse) {
                 progressDialog.dismiss();
 
                 authenticationButton.setVisibility(View.GONE);
-                nexaasAuthorization = item;
+
+                nexaasAuthorization = new NexaasIdUser(
+                        tokenResponse.getAccessToken(),
+                        tokenResponse.getTokenType(),
+                        tokenResponse.getRefreshToken(),
+                        tokenResponse.getScope(),
+                        tokenResponse.getExpiresIn(),
+                        tokenResponse.getApiToken());
 
                 SessionManager.storeUserTokens(MainActivity.this, nexaasAuthorization);
 
@@ -136,25 +112,37 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(String error) {
+            public void onFailure(@NonNull String error) {
                 progressDialog.dismiss();
                 Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
             }
         };
     }
 
-    private ResponseListener<UserProfile> onGetProfileListener() {
-        return new ResponseListener<UserProfile>() {
+    private ResponseCallback<PersonalInfo> onGetProfileListener() {
+        return new ResponseCallback<PersonalInfo>() {
             @Override
-            public void onSuccess(UserProfile item) {
+            public void onSuccess(PersonalInfo personalInfo) {
                 progressDialog.dismiss();
-                setProfile(item);
+                setProfile(new UserProfile(
+                    personalInfo.getId(),
+                    personalInfo.getFullName(),
+                    personalInfo.getNickname(),
+                    personalInfo.getEmail(),
+                    personalInfo.getBirth(),
+                    personalInfo.getGender(),
+                    personalInfo.getLanguage(),
+                    personalInfo.getPicture(),
+                    personalInfo.getTimezone(),
+                    personalInfo.getCountry(),
+                    personalInfo.getCity(),
+                    personalInfo.getBio()
+                ));
             }
 
             @Override
-            public void onFailure(String error) {
+            public void onFailure(@NonNull String error) {
                 progressDialog.dismiss();
-
                 Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         };
@@ -164,15 +152,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 100) {
             if (data != null) {
-                AuthorizationResponse authResponse = AuthorizationResponse.fromIntent(data);
-
                 if (resultCode != Activity.RESULT_CANCELED) {
-                    if (authResponse != null && authResponse.authorizationCode != null) {
-                        requestToken(authResponse.authorizationCode, authResponse.request.codeVerifier);
 
+                    String authCode = AuthConfig.Companion.getAuthorizationCode(data);
+                    if (authCode != null) {
+                        com.nexaas.android.nexaasidauth.model.OAuthTokenRequest token =
+                                AuthConfig.Companion.requestToken(
+                                        CLIENT_ID,
+                                        CLIENT_SECRET,
+                                        REDIRECT_URI,
+                                        authCode);
+
+                        OAuthTokenRequest.Companion.getOAuthTokenResponse(token, Environment.SANDBOX,
+                                oauthTokenListener());
                     }
-                } else Toast.makeText(this, "Autenticação cancelada", Toast.LENGTH_SHORT).show();
-
+                } else {
+                    Toast.makeText(this, "Autenticação cancelada", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

@@ -1,16 +1,14 @@
 package com.nexaas.pkceclienttest;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
-import com.nexaas.pkceclienttest.interfaces.ResponseListener;
-import com.nexaas.pkceclienttest.manager.ProfileManager;
 import com.nexaas.pkceclienttest.manager.SessionManager;
 import com.nexaas.pkceclienttest.models.UserProfile;
+import com.squareup.picasso.Picasso;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -67,32 +65,18 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void setProfile() {
         if (profile.picture != null)
-            ProfileManager.getProfilePicture(profile.picture, onPictureListener());
+            Picasso.get().load(profile.picture).into(picture);
 
         nameText.setText(profile.name);
         emailText.setText(profile.email);
         uuidText.setText(profile.uuid);
-        nicknameText.setText(profile.nickName);
+        nicknameText.setText(profile.nickname);
         birthText.setText(profile.birth);
         genderText.setText(profile.gender);
         languageText.setText(profile.language);
-        timezoneText.setText(profile.timeZone);
+        timezoneText.setText(profile.timezone);
         countryText.setText(profile.country);
         cityText.setText(profile.city);
         bioText.setText(profile.bio);
-    }
-
-    private ResponseListener<Bitmap> onPictureListener() {
-        return new ResponseListener<Bitmap>() {
-            @Override
-            public void onSuccess(Bitmap item) {
-                picture.setImageBitmap(item);
-            }
-
-            @Override
-            public void onFailure(String error) {
-
-            }
-        };
     }
 }
