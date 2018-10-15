@@ -1,17 +1,18 @@
 package com.nexaas.android.nexaasidauth.api
 
-import com.github.aurae.retrofit2.LoganSquareConverterFactory
-import com.nexaas.android.nexaasidauth.R
 import com.nexaas.android.nexaasidauth.api.services.OauthTokenService
 import com.nexaas.android.nexaasidauth.api.services.ProfileService
+import com.nexaas.android.nexaasidauth.helper.Consts
 import com.nexaas.android.nexaasidauth.helper.Environment
-import com.nexaas.android.nexaasidauth.helper.Utils
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 import java.util.concurrent.TimeUnit
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class RetrofitConfig(bearerToken: String?, environment: Environment) {
 
@@ -24,9 +25,11 @@ class RetrofitConfig(bearerToken: String?, environment: Environment) {
         get() = this.retrofit.create(OauthTokenService::class.java)
 
     init {
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
         this.retrofit = Retrofit.Builder()
                 .baseUrl(getBaseUrl(environment))
-                .addConverterFactory(LoganSquareConverterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .client(getClient(bearerToken))
                 .build()
     }
@@ -38,8 +41,8 @@ class RetrofitConfig(bearerToken: String?, environment: Environment) {
 
         private fun getBaseUrl(environment: Environment) : String {
             return when(environment == Environment.SANDBOX) {
-                true -> Utils.getString(R.string.nexaas_id_url_sandbox)
-                false -> Utils.getString(R.string.nexaas_id_url_production)
+                true -> Consts.NEXAAS_ID_URL_SANDBOX
+                false -> Consts.NEXAAS_ID_URL_PRODUCTION
             }
         }
 
@@ -50,25 +53,11 @@ class RetrofitConfig(bearerToken: String?, environment: Environment) {
                     .readTimeout(READ_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
                     .connectTimeout(CONNECT_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
 
-            if (bearerToken == null)
-                clientBuilder.addInterceptor(interceptor)
-            else
+            if (bearerToken != null)
                 clientBuilder.addInterceptor(getInterceptorBearer(bearerToken))
 
             return clientBuilder.build()
         }
-
-        private val interceptor: Interceptor
-            get() = Interceptor { chain ->
-                val request = chain.request()
-
-                request.newBuilder()
-                        .addHeader("Content-Type", "application/json;charset=UTF-8")
-                        .addHeader("accept", "application.json;charset=UTF-8")
-                        .build()
-
-                chain.proceed(request)
-            }
 
         private fun getInterceptorBearer(bearer: String): Interceptor {
             return Interceptor { chain ->
