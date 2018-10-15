@@ -9,18 +9,19 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
  */
 @JsonObject
 public class NexaasIdUser {
+
     @JsonField(name = "access_token")
-    public String accessToken;
+    private String accessToken;
     @JsonField(name = "token_type")
-    public String tokenType;
+    private String tokenType;
     @JsonField(name = "refresh_token")
-    public String refreshToken;
+    private String refreshToken;
     @JsonField(name = "scope")
-    public String scope;
+    private String scope;
     @JsonField(name = "expires_in")
-    public long expiresIn;
+    private long expiresIn;
     @JsonField(name = "api_token")
-    public String apiToken;
+    private String apiToken;
 
     public NexaasIdUser() {}
 
@@ -32,6 +33,54 @@ public class NexaasIdUser {
         this.refreshToken = refreshToken;
         this.scope = scope;
         this.expiresIn = expiresIn;
+        this.apiToken = apiToken;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public long getExpiresIn() {
+        return expiresIn;
+    }
+
+    public void setExpiresIn(long expiresIn) {
+        this.expiresIn = expiresIn;
+    }
+
+    public String getApiToken() {
+        return apiToken;
+    }
+
+    public void setApiToken(String apiToken) {
         this.apiToken = apiToken;
     }
 }

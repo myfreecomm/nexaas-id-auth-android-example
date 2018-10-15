@@ -11,29 +11,29 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 public class UserProfile {
 
     @JsonField(name = "id")
-    public String uuid;
+    private String uuid;
     @JsonField(name = "full_name")
-    public String name;
+    private String name;
     @JsonField
-    public String nickname;
+    private String nickname;
     @JsonField
-    public String email;
+    private String email;
     @JsonField
-    public String birth;
+    private String birth;
     @JsonField
-    public String gender;
+    private String gender;
     @JsonField
-    public String language;
+    private String language;
     @JsonField
-    public String picture;
+    private String picture;
     @JsonField
-    public String timezone;
+    private String timezone;
     @JsonField
-    public String country;
+    private String country;
     @JsonField
-    public String city;
+    private String city;
     @JsonField
-    public String bio;
+    private String bio;
 
     public UserProfile() {}
 
@@ -52,6 +52,102 @@ public class UserProfile {
         this.timezone = timezone;
         this.country = country;
         this.city = city;
+        this.bio = bio;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getBirth() {
+        return birth;
+    }
+
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
         this.bio = bio;
     }
 }

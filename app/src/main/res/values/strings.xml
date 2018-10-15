@@ -14,4 +14,8 @@
     <string name="nexaas_mark">Nexaas logo</string>
     <string name="id">id</string>
     <string name="user_profile">Perfil do usuário</string>
+    <string name="auth_canceled">Autenticação cancelada</string>
+    <string name="loading_auth">Autenticando usuário</string>
+    <string name="recovering_user_data">Recuperando dados do usuário</string>
+    <string name="waiting">aguarde&#8230;</string>
 </resources>

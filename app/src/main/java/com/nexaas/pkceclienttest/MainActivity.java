@@ -26,9 +26,10 @@ import com.nexaas.pkceclienttest.models.UserProfile;
 public class MainActivity extends AppCompatActivity {
 
     // These three consts must be taken in your application created in NexaasID dashboard
-    private static final String CLIENT_ID = "JDBY5VIH55F3ZGDG2Y3WWCWNAE";
-    private static final String CLIENT_SECRET = "2D7ZAIXJUJHHDHSZUQBIHAZUOU";
-    private static final String REDIRECT_URI = "app://com.nexaas.pw2oauthtest.browserswitch/callback";
+    private static final String CLIENT_ID = "TUWELCEOWBCWTB4VK2EOBMCJ6I";
+    private static final String CLIENT_SECRET = "AIWVHWHI5VHJRELNXNPC2Q65EQ";
+    private static final String REDIRECT_SCHEME = "app://";
+    private static final String REDIRECT_URI = "com.br.myfreecomm.rexpense.browserswitch/callback";
 
     private Button authenticationButton;
     private ProgressDialog progressDialog;
@@ -60,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
-        progressDialog.setTitle("Recuperando dados do usuário");
+        progressDialog.setTitle(getString(R.string.recovering_user_data));
         progressDialog.show();
 
-        ProfileRequest.Companion.getPersonalInfo(
-                nexaasAuthorization.accessToken,
+        ProfileRequest.getPersonalInfo(
+                nexaasAuthorization.getAccessToken(),
                 Environment.SANDBOX,
                 onGetProfileListener());
     }
@@ -73,15 +74,12 @@ public class MainActivity extends AppCompatActivity {
         authenticationButton = findViewById(R.id.athentication_button);
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Autenticando usuário");
-        progressDialog.setMessage("aguarde...");
+        progressDialog.setTitle(getString(R.string.loading_auth));
+        progressDialog.setMessage(getString(R.string.waiting));
     }
 
     public void onLoginButtonClick(View view) {
-        Intent authIntent =
-                AuthConfig.Companion.authorize(this,
-                        CLIENT_ID, REDIRECT_URI, Environment.SANDBOX);
-
+        Intent authIntent = AuthConfig.authorize(this, CLIENT_ID, REDIRECT_SCHEME, REDIRECT_URI, Environment.SANDBOX);
         startActivityForResult(authIntent, 100);
     }
 
@@ -154,21 +152,22 @@ public class MainActivity extends AppCompatActivity {
             if (data != null) {
                 if (resultCode != Activity.RESULT_CANCELED) {
 
-                    String authCode = AuthConfig.Companion.getAuthorizationCode(data);
-                    if (authCode != null) {
+                    String authCode = AuthConfig.getAuthorizationCode(data);
+                    String codeVerifier = AuthConfig.getCodeVerifier(data);
+                    if (authCode != null && codeVerifier != null) {
                         com.nexaas.android.nexaasidauth.model.OAuthTokenRequest token =
-                                AuthConfig.Companion.requestToken(
+                                AuthConfig.requestToken(
                                         CLIENT_ID,
                                         CLIENT_SECRET,
-                                        REDIRECT_URI,
-                                        authCode);
+                                        REDIRECT_SCHEME + REDIRECT_URI,
+                                        authCode,
+                                        codeVerifier);
 
-                        OAuthTokenRequest.Companion.getOAuthTokenResponse(token, Environment.SANDBOX,
+                        OAuthTokenRequest.getOAuthTokenResponse(token, Environment.SANDBOX,
                                 oauthTokenListener());
                     }
-                } else {
-                    Toast.makeText(this, "Autenticação cancelada", Toast.LENGTH_SHORT).show();
-                }
+                } else
+                    Toast.makeText(this, R.string.auth_canceled, Toast.LENGTH_SHORT).show();
             }
         }
     }

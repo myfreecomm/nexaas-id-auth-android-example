@@ -64,19 +64,19 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void setProfile() {
-        if (profile.picture != null)
-            Picasso.get().load(profile.picture).into(picture);
+        if (profile.getPicture() != null)
+            Picasso.get().load(profile.getPicture()).into(picture);
 
-        nameText.setText(profile.name);
-        emailText.setText(profile.email);
-        uuidText.setText(profile.uuid);
-        nicknameText.setText(profile.nickname);
-        birthText.setText(profile.birth);
-        genderText.setText(profile.gender);
-        languageText.setText(profile.language);
-        timezoneText.setText(profile.timezone);
-        countryText.setText(profile.country);
-        cityText.setText(profile.city);
-        bioText.setText(profile.bio);
+        nameText.setText(profile.getName());
+        emailText.setText(profile.getEmail());
+        uuidText.setText(profile.getUuid());
+        nicknameText.setText(profile.getNickname());
+        birthText.setText(profile.getBirth());
+        genderText.setText(profile.getGender());
+        languageText.setText(profile.getLanguage());
+        timezoneText.setText(profile.getTimezone());
+        countryText.setText(profile.getCountry());
+        cityText.setText(profile.getCity());
+        bioText.setText(profile.getBio());
     }
 }
