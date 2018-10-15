@@ -1,7 +1,7 @@
 package com.nexaas.android.nexaasidauth.api
 
-import com.nexaas.android.nexaasidauth.R
 import com.nexaas.android.nexaasidauth.callback.ResponseCallback
+import com.nexaas.android.nexaasidauth.helper.Consts
 import com.nexaas.android.nexaasidauth.helper.Environment
 import com.nexaas.android.nexaasidauth.helper.Utils
 import com.nexaas.android.nexaasidauth.model.Contacts
@@ -16,6 +16,7 @@ class ProfileRequest {
 
     companion object {
 
+        @JvmStatic
         fun getPersonalInfo(accessToken: String, environment: Environment, callback: ResponseCallback<PersonalInfo?>) {
 
             RetrofitConfig(accessToken, environment).profileService.personalInfo
@@ -24,7 +25,7 @@ class ProfileRequest {
                             if (response.isSuccessful)
                                 callback.onSuccess(response.body())
                             else if (response.code() == 401)
-                                callback.onFailure(Utils.getString(R.string.unauthorized))
+                                callback.onFailure(Consts.UNAUTHORIZED)
                         }
 
                         override fun onFailure(call: Call<PersonalInfo>, t: Throwable) {
@@ -41,7 +42,7 @@ class ProfileRequest {
                             if (response.isSuccessful)
                                 callback.onSuccess(response.body())
                             else if (response.code() == 401)
-                                callback.onFailure(Utils.getString(R.string.unauthorized))
+                                callback.onFailure(Consts.UNAUTHORIZED)
                         }
 
                         override fun onFailure(call: Call<ProfessionalInfo>, t: Throwable) {
@@ -58,7 +59,7 @@ class ProfileRequest {
                             if (response.isSuccessful)
                                 callback.onSuccess(response.body())
                             else if (response.code() == 401)
-                                callback.onFailure(Utils.getString(R.string.unauthorized))
+                                callback.onFailure(Consts.UNAUTHORIZED)
                         }
 
                         override fun onFailure(call: Call<Contacts>, t: Throwable) {
@@ -75,7 +76,7 @@ class ProfileRequest {
                             if (response.isSuccessful)
                                 callback.onSuccess(response.body())
                             else if (response.code() == 401)
-                                callback.onFailure(Utils.getString(R.string.unauthorized))
+                                callback.onFailure(Consts.UNAUTHORIZED)
                         }
 
                         override fun onFailure(call: Call<Emails>, t: Throwable) {

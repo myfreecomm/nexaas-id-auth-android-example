@@ -13,5 +13,7 @@ data class OAuthTokenRequest(
     val redirectUri: String,
     @Json(name = "grant_type")
     val grantType: String,
-    val code: String
+    val code: String,
+    @Json(name = "code_verifier")
+    val codeVerifier: String
 )
