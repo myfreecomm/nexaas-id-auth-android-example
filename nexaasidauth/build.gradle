@@ -16,7 +16,6 @@ android {
     buildTypes {
         debug {
             debuggable true
-            jniDebuggable true
             minifyEnabled false
         }
         release {
@@ -32,6 +31,10 @@ android {
 }
 
 dependencies {
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta01'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'se.ansman.kotshi:api:1.0.5'
