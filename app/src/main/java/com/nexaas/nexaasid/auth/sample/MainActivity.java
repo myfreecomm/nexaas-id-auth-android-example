@@ -26,10 +26,10 @@ import com.nexaas.nexaasid.auth.sample.models.UserProfile;
 public class MainActivity extends AppCompatActivity {
 
     // These three consts must be taken in your application created in NexaasID dashboard
-    private static final String CLIENT_ID = "TUWELCEOWBCWTB4VK2EOBMCJ6I";
-    private static final String CLIENT_SECRET = "AIWVHWHI5VHJRELNXNPC2Q65EQ";
-    private static final String REDIRECT_SCHEME = "app://";
-    private static final String REDIRECT_URI = "com.br.myfreecomm.rexpense.browserswitch/callback";
+    private static final String CLIENT_ID = "[client id]";
+    private static final String CLIENT_SECRET = "[client secret]";
+    private static final String REDIRECT_URI_SCHEME = "app://";
+    private static final String REDIRECT_URI = "[redirect uri (with no scheme prefix)]";
 
     private Button authenticationButton;
     private ProgressDialog progressDialog;
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLoginButtonClick(View view) {
-        Intent authIntent = AuthConfig.authorize(this, CLIENT_ID, REDIRECT_SCHEME, REDIRECT_URI, Environment.SANDBOX);
+        Intent authIntent = AuthConfig.authorize(this, CLIENT_ID, REDIRECT_URI_SCHEME, REDIRECT_URI, Environment.SANDBOX);
         startActivityForResult(authIntent, 100);
     }
 
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                 AuthConfig.requestToken(
                                         CLIENT_ID,
                                         CLIENT_SECRET,
-                                        REDIRECT_SCHEME + REDIRECT_URI,
+                                        REDIRECT_URI_SCHEME + REDIRECT_URI,
                                         authCode,
                                         codeVerifier);
 
