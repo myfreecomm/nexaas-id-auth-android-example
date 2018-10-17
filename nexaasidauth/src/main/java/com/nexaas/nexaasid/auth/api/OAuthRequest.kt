@@ -10,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class OAuthTokenRequest {
+class OAuthRequest {
 
     companion object {
 
@@ -29,6 +29,18 @@ class OAuthTokenRequest {
 
                         override fun onFailure(call: Call<OAuthTokenResponse>, t: Throwable) {
                             callback.onFailure(Utils.treatFailureMessage(t))
+                        }
+                    })
+        }
+
+        @JvmStatic
+        fun signOut(accessToken: String, environment: Environment) {
+            RetrofitConfig(null, environment).oAuthTokenService.signOut(accessToken)
+                    .enqueue(object : Callback<Void> {
+                        override fun onResponse(call: Call<Void>, response: Response<Void>) {}
+
+                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                            Utils.treatFailureMessage(t)
                         }
                     })
         }
